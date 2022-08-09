@@ -12,6 +12,8 @@ export class EntityManager {
 
    constructor(public dataSource: DataSource) {
       const tables = getMetadata().tables;
+      console.log("TABLES")
+      console.log(tables)
       this.tables = tables
       this.repos = tables.map(t => new Repository(t.entity, this))
    }
