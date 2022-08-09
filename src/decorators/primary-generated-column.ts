@@ -3,6 +3,7 @@ import { getMetadata } from "../metadata/MetaData";
 export function PrimaryGeneratedColumn() {
    return function (target: any, key: string) {
       const t = Reflect.getMetadata("design:type", target, key);
+      console.log(t)
       if (t.name !== "Number") throw new Error('PrimaryGeneratedColumn must be numeric')
       // console.log("  " + t.name)
       const column = Object.assign({
