@@ -1,1 +1,0 @@
-{"version":3,"file":"PostgresResultFormatter.js","sourceRoot":"","sources":["PostgresResultFormatter.ts"],"names":[],"mappings":";;;AAEA;IAAA;IASA,CAAC;IAPE,gDAAc,GAAd,UAAuB,WAAgB;QACpC,OAAO,WAAW,CAAC,IAAI,CAAC,CAAC,CAAC,CAAA;IAC7B,CAAC;IAED,+CAAa,GAAb,UAAsB,WAAgB;QACnC,OAAO,WAAW,CAAC,IAAI,CAAC;IAC3B,CAAC;IACJ,8BAAC;AAAD,CAAC,AATD,IASC;AATY,0DAAuB"}
