@@ -12,6 +12,7 @@ export class EntityManager {
 
    constructor(public dataSource: DataSource) {
       const metadata = getMetadata();
+      console.log(metadata)
       const tables = metadata.tables;
       console.log("TABLES")
       console.log(tables)
