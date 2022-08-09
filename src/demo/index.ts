@@ -4,7 +4,7 @@ import {DataSource} from "../data-source/DataSource";
 export const myDataSource = new DataSource({
    type: "postgres",
    host: "localhost",
-   password: "sgHui780156@#78rTy!%",
+   password: "typeorm",
    database: "typeorm"
 })
 
