@@ -1,9 +1,10 @@
 import {Column} from "../decorators/column";
 import {Entity} from "../decorators/entity";
+import {PrimaryGeneratedColumn} from "../decorators/primary-generated-column";
 
 @Entity()
 export class City {
-   @Column({primaryKey: true, autoIncrement: true})
+   @PrimaryGeneratedColumn()
    id: number
 
    @Column()

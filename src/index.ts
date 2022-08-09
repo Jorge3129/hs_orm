@@ -1,29 +1,44 @@
+import {DataSource} from "./data-source/DataSource";
 import {User} from "./demo/User";
-import {database} from "./decorators/store";
-import {createTable} from "./sql/createTable";
-import * as mysql from "promise-mysql"
-import {asyncMap} from "./utils/asyncMap";
-import {City} from "./demo/City";
 
+export const myDataSource = new DataSource({
+   type: "postgres",
+   host: "localhost",
+   password: "sgHui780156@#78rTy!%",
+   database: "typeorm"
+})
 
-const entities = [User, City]
-const statements = database.tables.map(createTable)
-statements.forEach(st => console.log(st))
+console.log(myDataSource.config.type)
 
+const main = async () => {
+   try {
+      await myDataSource.initialize()
+      const userRepo = myDataSource.getRepository<User>(User)
 
-// mysql.createConnection({
-//    host: "localhost",
-//    user: "root",
-//    password: "sgHui780156@#78rTy!%",
-//    database: "typeorm"
-// }).then(async (connection) => {
-//    const statements = database.tables.map(createTable)
-//    statements.forEach(console.log)
-//
-//    const results = await asyncMap(statements, (statement) => {
-//       return connection.query(statement);
-//    })
-//    console.log(results)
-//    const res2 = await connection.query("SHOW TABLES;")
-//    console.log(res2)
-// })
+      await userRepo.save({name: "Jorge", dob: new Date('2003-07-14')})
+      await userRepo.save({name: "Paul", dob: new Date('2003-07-14')})
+      await userRepo.save({name: "John", dob: new Date('2003-07-14')})
+      await userRepo.save({name: "John", dob: new Date('2003-07-14')})
+      await userRepo.save({name: "John", dob: new Date('2003-07-14')})
+
+      const findRes = await userRepo.find({
+         where: [
+            {id: 1},
+            {name: "John"}
+         ]
+      })
+
+      console.log(findRes)
+
+      await myDataSource.destroy()
+   } catch (e) {
+      console.log(e)
+      await myDataSource.destroy()
+      process.exit(1)
+   }
+}
+
+main().then(() => {
+   process.exit(0)
+})
+

@@ -1,7 +1,10 @@
 import "reflect-metadata"
-import {database} from "./store";
+import {getMetadata} from "../metadata/MetaData";
 
 export interface Options {
+   type?: string
+   name?: string
+   length?: number
    primaryKey?: boolean
    autoIncrement?: boolean
    notNull?: boolean
@@ -9,23 +12,25 @@ export interface Options {
 }
 
 
-const convertOptions = (options: Options): Required<Options> => {
+const convertOptions = (options: Options): Options => {
    return {
       notNull: !!options?.notNull,
       autoIncrement: !!options?.autoIncrement,
       primaryKey: !!options?.primaryKey,
-      default: options?.default
+      default: options?.default,
    }
 }
 
 export function Column(options?: Options) {
    return function (target: any, key: string) {
       const t = Reflect.getMetadata("design:type", target, key);
-      // console.log(t.name)
+      // console.log("  " + t.name)
       const column = Object.assign({
          name: key,
          type: t.name
+         //@ts-ignore
       }, convertOptions(options))
-      database.columns.push(column)
+      //@ts-ignore
+      getMetadata().columns.push(column)
    }
 }

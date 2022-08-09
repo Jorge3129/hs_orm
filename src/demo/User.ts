@@ -1,9 +1,10 @@
 import {Entity} from "../decorators/entity";
 import {Column} from "../decorators/column";
+import {PrimaryGeneratedColumn} from "../decorators/primary-generated-column";
 
 @Entity('user')
 export class User {
-   @Column({primaryKey: true, autoIncrement: true})
+   @PrimaryGeneratedColumn()
    id: number
 
    @Column()
@@ -12,12 +13,9 @@ export class User {
    // @Column()
    // city: City
 
-   @Column({default: 10})
-   age: number
-
    @Column()
    dob: Date
 
-   @Column()
-   married: boolean
+   // @Column()
+   // married: boolean
 }
