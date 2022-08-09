@@ -12,5 +12,6 @@ export const Entity = (name?: string) => {
          primaryKey: metadata.columns.find(c => c.primaryKey)
       })
       metadata.columns = []
+      console.log(metadata.tables)
    }
 }

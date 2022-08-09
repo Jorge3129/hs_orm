@@ -7,12 +7,13 @@ import {FindOneOptions} from "../find-options/FindOptions";
 
 export class EntityManager {
 
-   readonly repos: Repository<any>[] = []
+   readonly repos: Repository[] = []
    readonly tables: ITable[] = []
 
    constructor(public dataSource: DataSource) {
       const tables = getMetadata().tables;
       this.tables = tables
+      console.log(tables)
       this.repos = tables.map(t => new Repository(t.entity, this))
    }
 
