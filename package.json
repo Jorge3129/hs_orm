@@ -1,6 +1,6 @@
 {
   "name": "@heorhii.sanchenko/typeorm",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Simple clone of TypeORM",
   "main": "lib/index.js",
   "scripts": {
@@ -14,7 +14,13 @@
     "type": "git",
     "url": "https://github.com/Jorge3129/hs_orm.git"
   },
-  "keywords": ["ORM", "TypeORM", "SQL", "MySQL", "PostgreSQL"],
+  "keywords": [
+    "ORM",
+    "TypeORM",
+    "SQL",
+    "MySQL",
+    "PostgreSQL"
+  ],
   "author": "Heorhii Sanchenko",
   "license": "ISC",
   "dependencies": {
