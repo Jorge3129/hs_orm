@@ -12,5 +12,6 @@ const metadata: IMetaData = {
 }
 
 export const getMetadata = () => {
-  return metadata
+   console.log(metadata)
+   return metadata
 }

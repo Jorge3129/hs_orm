@@ -13,7 +13,6 @@ export class EntityManager {
    constructor(public dataSource: DataSource) {
       const tables = getMetadata().tables;
       this.tables = tables
-      console.log(tables)
       this.repos = tables.map(t => new Repository(t.entity, this))
    }
 
