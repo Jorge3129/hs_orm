@@ -11,9 +11,11 @@ export class EntityManager {
    readonly tables: ITable[] = []
 
    constructor(public dataSource: DataSource) {
-      const tables = getMetadata().tables;
+      const metadata = getMetadata();
+      const tables = metadata.tables;
       console.log("TABLES")
       console.log(tables)
+      console.log("TABLES")
       this.tables = tables
       this.repos = tables.map(t => new Repository(t.entity, this))
    }
