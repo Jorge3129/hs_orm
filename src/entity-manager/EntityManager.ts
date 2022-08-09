@@ -17,6 +17,7 @@ export class EntityManager {
    }
 
    public getRepository<T extends ObjectLiteral = any>(entity: Function): Repository<T> {
+      console.log(this.repos)
       return this.repos.find(r => r.entity === entity) as Repository<T>;
    }
 
