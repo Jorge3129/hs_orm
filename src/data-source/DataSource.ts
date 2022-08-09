@@ -1,6 +1,6 @@
 import {Driver} from "../driver/Driver";
 import {DriverFactory} from "../driver/DriverFactory";
-import {IDataSourceConfig} from "./DataSourceConfig";
+import {DataSourceConfig} from "./DataSourceConfig";
 import {ObjectLiteral} from "../types/ObjectLiteral";
 import {EntityManager} from "../entity-manager/EntityManager";
 import {Repository} from "../repository/Repository";
@@ -10,7 +10,7 @@ export class DataSource {
    readonly driver: Driver
    manager: EntityManager
 
-   constructor(public readonly config: IDataSourceConfig) {
+   constructor(public readonly config: DataSourceConfig) {
       this.driver = new DriverFactory().create(this)
       this.manager = new EntityManager(this);
    }

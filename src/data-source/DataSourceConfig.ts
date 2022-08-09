@@ -1,4 +1,4 @@
-export interface IDataSourceConfig {
+export interface DataSourceConfig {
    type: "mysql" | "postgres",
    host: string,
    port?: number,
