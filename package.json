@@ -1,6 +1,6 @@
 {
   "name": "@heorhii.sanchenko/typeorm",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Simple clone of TypeORM",
   "main": "lib/index.js",
   "scripts": {
