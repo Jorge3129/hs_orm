@@ -1,5 +1,5 @@
 
-##@heorhii.sanchenko/typeorm
+## @heorhii.sanchenko/typeorm
 
 This is a simple clone of TypeORM
 

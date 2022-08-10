@@ -1,6 +1,7 @@
 import {Logger} from "./Logger";
 import {DataSourceConfig} from "../data-source/DataSourceConfig";
 import dayjs from "dayjs";
+import {ColorCodes} from "./ColorCodes";
 
 
 export class DebugLogger implements Logger {
@@ -11,7 +12,7 @@ export class DebugLogger implements Logger {
    public logQuery(queryText: string, values?: any): void {
       if (!this.config.logging) return;
       console.log("")
-      console.log("\x1b[32m%s\x1b[0m", DebugLogger.formatDateTime(new Date()))
+      console.log(`${ColorCodes.FgCyan}%s${ColorCodes.Reset}`, DebugLogger.formatDateTime(new Date()))
       console.log(queryText);
       if (values) console.log(values)
    }
