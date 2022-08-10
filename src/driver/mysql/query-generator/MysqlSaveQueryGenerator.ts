@@ -12,11 +12,8 @@ export class MysqlSaveQueryGenerator implements QueryGenerator {
       const escape = this.constants.kwEscape;
       return new Query(
           //@formatter:off
-          `INSERT INTO ${escape}${table.name}${escape} (${this.formatColumnsNames(entity)})
-           VALUES (${this.getPlaceholders(entity)});
-          SELECT *
-          FROM ${escape}${table.name}${escape}
-          WHERE ${escape}${table.primaryKey?.name}${escape} = LAST_INSERT_ID();`,
+          `INSERT INTO ${escape}${table.name}${escape} (${this.formatColumnsNames(entity)}) VALUES (${this.getPlaceholders(entity)});
+SELECT * FROM ${escape}${table.name}${escape} WHERE ${escape}${table.primaryKey?.name}${escape} = LAST_INSERT_ID();`,
           this.getValues(entity)
           //@formatter:on
       )

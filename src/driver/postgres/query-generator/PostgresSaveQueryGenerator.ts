@@ -4,7 +4,7 @@ import {ITable} from "../../../sql/models/table";
 import {PostgresConstants} from "../../../sql/constants/pg";
 import {QueryGenerator} from "../../../query-runner/QueryGenerator";
 
-export class PostgresSaveQueryGenerator implements QueryGenerator{
+export class PostgresSaveQueryGenerator implements QueryGenerator {
 
    private constants = PostgresConstants
 
@@ -12,8 +12,9 @@ export class PostgresSaveQueryGenerator implements QueryGenerator{
       if (!table) throw new Error(`Table ${entity.constructor.name} does not exist`)
       const escape = this.constants.kwEscape;
       return new Query(
-          `INSERT INTO ${escape}${table.name}${escape} (${this.formatColumnsNames(entity)})
-           VALUES (${this.getPlaceholders(entity)}) RETURNING *`,
+          //@formatter:off
+          `INSERT INTO ${escape}${table.name}${escape} (${this.formatColumnsNames(entity)}) VALUES (${this.getPlaceholders(entity)}) RETURNING *`,
+          //@formatter:on
           this.getValues(entity)
       )
    }

@@ -16,7 +16,6 @@ export class Repository<Entity extends ObjectLiteral = any> {
    }
 
    async find<T extends FindOneOptions<Entity>>(options?: T): Promise<Array<T & Entity>> {
-      console.log(options)
       return this.manager.find<T>(this.entity, options)
    }
 }

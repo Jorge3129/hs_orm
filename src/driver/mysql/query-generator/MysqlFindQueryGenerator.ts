@@ -14,8 +14,7 @@ export class MysqlFindQueryGenerator implements QueryGenerator {
       const whereClause = options?.where;
       return new Query(
           //@formatter:off
-          `SELECT * FROM ${escape}${table.name}${escape} 
-            ${this.formatWhereClause(whereClause)}`,
+          `SELECT * FROM ${escape}${table.name}${escape} ${this.formatWhereClause(whereClause)}`,
           //@formatter:on
           this.getValues(whereClause)
       )

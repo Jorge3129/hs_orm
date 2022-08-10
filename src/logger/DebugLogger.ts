@@ -10,7 +10,8 @@ export class DebugLogger implements Logger {
 
    public logQuery(queryText: string, values?: any): void {
       if (!this.config.logging) return;
-      console.log(DebugLogger.formatDateTime(new Date()))
+      console.log("")
+      console.log("\x1b[32m", DebugLogger.formatDateTime(new Date()))
       console.log(queryText);
       if (values) console.log(values)
    }
