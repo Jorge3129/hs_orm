@@ -18,7 +18,7 @@ export class User {
    @PrimaryGeneratedColumn()
    id: number
 
-   @Column()
+   @Column({notNull: true})
    name: string
 
    @Column()
