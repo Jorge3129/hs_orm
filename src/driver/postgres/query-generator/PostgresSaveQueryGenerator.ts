@@ -2,8 +2,9 @@ import {ObjectLiteral} from "../../../types/ObjectLiteral";
 import {Query} from "../../../sql/Query";
 import {ITable} from "../../../sql/models/table";
 import {PostgresConstants} from "../../../sql/constants/pg";
+import {QueryGenerator} from "../../../query-runner/QueryGenerator";
 
-export class PostgresSaveQueryGenerator {
+export class PostgresSaveQueryGenerator implements QueryGenerator{
 
    private constants = PostgresConstants
 

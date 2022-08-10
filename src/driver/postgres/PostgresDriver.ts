@@ -7,13 +7,17 @@ import {getQueryText, Query} from "../../sql/Query";
 import {QueryGenerator} from "../../query-runner/QueryGenerator";
 import {PostgresSaveQueryGenerator} from "./query-generator/PostgresSaveQueryGenerator";
 import {PostgresResultFormatter} from "./query-generator/PostgresResultFormatter";
-import { PostgresFindQueryGenerator } from "./query-generator/PostgresFindQueryGenerator";
+import {PostgresFindQueryGenerator} from "./query-generator/PostgresFindQueryGenerator";
+import {Logger} from "../../logger/Logger";
+import {DebugLogger} from "../../logger/DebugLogger";
 
 export class PostgresDriver implements Driver {
 
    private connection: Client
+   public readonly logger: Logger
 
    constructor(public readonly dataSource: DataSource) {
+      this.logger = new DebugLogger(dataSource.config)
    }
 
    getQueryGenerator(type: string): QueryGenerator {
@@ -49,8 +53,7 @@ export class PostgresDriver implements Driver {
 
    public query(queryTextOrObject: string | Query, values?: any): Promise<any> {
       const [queryText, queryValues] = getQueryText(queryTextOrObject)
-      // console.log(queryText)
-      // if (queryValues) console.log(queryValues)
+      this.logger.logQuery(queryText, queryValues)
       return this.connection.query(queryText, queryValues);
    }
 

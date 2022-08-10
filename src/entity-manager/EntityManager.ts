@@ -12,17 +12,12 @@ export class EntityManager {
 
    constructor(public dataSource: DataSource) {
       const metadata = getMetadata();
-      console.log(metadata)
       const tables = metadata.tables;
-      console.log("TABLES")
-      console.log(tables)
-      console.log("TABLES")
       this.tables = tables
       this.repos = tables.map(t => new Repository(t.entity, this))
    }
 
    public getRepository<T extends ObjectLiteral = any>(entity: Function): Repository<T> {
-      console.log(this.repos)
       return this.repos.find(r => r.entity === entity) as Repository<T>;
    }
 

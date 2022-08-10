@@ -9,12 +9,16 @@ import {QueryGenerator} from "../../query-runner/QueryGenerator";
 import {MysqlSaveQueryGenerator} from "./query-generator/MysqlSaveQueryGenerator";
 import {MysqlResultFormatter} from "./query-generator/MysqlResultFormatter";
 import {MysqlFindQueryGenerator} from "./query-generator/MysqlFindQueryGenerator";
+import {Logger} from "../../logger/Logger";
+import {DebugLogger} from "../../logger/DebugLogger";
 
 export class MysqlDriver implements Driver {
 
    private connection: Connection
+   public readonly logger: Logger
 
    constructor(public readonly dataSource: DataSource) {
+      this.logger = new DebugLogger(dataSource.config)
    }
 
    public connect(): Promise<void> {
@@ -41,6 +45,7 @@ export class MysqlDriver implements Driver {
    public query(queryTextOrObject: string | Query, values?: any): Promise<any> {
       const [queryText, queryValues] = getQueryText(queryTextOrObject)
       return new Promise<any>((resolve, reject) => {
+         this.logger.logQuery(queryText, queryValues)
          this.connection.query(queryText, queryValues, ((err, results) => {
             if (err) reject(err)
             resolve(results)

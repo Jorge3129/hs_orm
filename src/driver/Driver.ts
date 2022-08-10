@@ -7,7 +7,6 @@ export interface Driver {
    connect(): Promise<any>
    disconnect(): Promise<void>
    query(queryText: string | Query, values?: any): Promise<any>
-   query(query: Query): Promise<any>
    createQueryRunner(): QueryRunner
    getQueryGenerator(type: string): QueryGenerator
    getResultFormatter(): ResultFormatter
