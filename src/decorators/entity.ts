@@ -1,3 +1,4 @@
+import "reflect-metadata"
 import {createSchema} from "../sql/create-schema";
 import {getTempMetadata, saveMetaData} from "../metadata/MetaData";
 

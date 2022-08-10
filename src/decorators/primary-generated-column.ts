@@ -1,4 +1,5 @@
-import { getMetadata, getTempMetadata } from "../metadata/MetaData";
+import "reflect-metadata"
+import {getTempMetadata} from "../metadata/MetaData";
 
 export function PrimaryGeneratedColumn() {
    return function (target: any, key: string) {

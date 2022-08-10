@@ -1,5 +1,5 @@
 import "reflect-metadata"
-import {getMetadata, getTempMetadata} from "../metadata/MetaData";
+import {getTempMetadata} from "../metadata/MetaData";
 
 export interface Options {
    type?: string
