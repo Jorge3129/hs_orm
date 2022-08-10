@@ -1,4 +1,4 @@
-import { getMetadata } from "../metadata/MetaData";
+import { getMetadata, getTempMetadata } from "../metadata/MetaData";
 
 export function PrimaryGeneratedColumn() {
    return function (target: any, key: string) {
@@ -11,6 +11,6 @@ export function PrimaryGeneratedColumn() {
          primaryKey: true,
          generated: true
       })
-      getMetadata().columns.push(column)
+      getTempMetadata().columns.push(column)
    }
 }

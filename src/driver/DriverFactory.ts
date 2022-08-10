@@ -3,7 +3,6 @@ import {Driver} from "./Driver";
 import {MysqlDriver} from "./mysql/MysqlDriver";
 import {PostgresDriver} from "./postgres/PostgresDriver";
 
-
 export class DriverFactory {
    constructor() {
    }

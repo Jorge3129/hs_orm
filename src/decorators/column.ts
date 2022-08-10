@@ -1,5 +1,5 @@
 import "reflect-metadata"
-import {getMetadata} from "../metadata/MetaData";
+import {getMetadata, getTempMetadata} from "../metadata/MetaData";
 
 export interface Options {
    type?: string
@@ -31,6 +31,6 @@ export function Column(options?: Options) {
          //@ts-ignore
       }, convertOptions(options))
       //@ts-ignore
-      getMetadata().columns.push(column)
+      getTempMetadata().columns.push(column)
    }
 }

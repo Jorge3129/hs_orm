@@ -1,9 +1,9 @@
 import {createSchema} from "../sql/create-schema";
-import {getMetadata} from "../metadata/MetaData";
+import {getTempMetadata, saveMetaData} from "../metadata/MetaData";
 
 export const Entity = (name?: string) => {
    return (target: any) => {
-      const metadata = getMetadata()
+      const metadata = getTempMetadata()
       // console.log(target.name)
       metadata.tables.push({
          name: name || target.name,
@@ -12,5 +12,6 @@ export const Entity = (name?: string) => {
          primaryKey: metadata.columns.find(c => c.primaryKey)
       })
       metadata.columns = []
+      saveMetaData()
    }
 }
