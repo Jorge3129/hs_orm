@@ -19,12 +19,12 @@ describe('MysqlFindQueryGenerator test', () => {
    })
 
    test('getValues with object', () => {
-      const actual = generator.getValues<any>({name: "Andrew", age: 10})
+      const actual = generator.getWhereValues<any>({name: "Andrew", age: 10})
       expect(actual).toEqual(["Andrew", 10])
    })
 
    test('getValues with array', () => {
-      const actual = generator.getValues<any>([
+      const actual = generator.getWhereValues<any>([
          {name: "Andrew", age: 10},
          {city: "London", address: "Time Square"},
       ])

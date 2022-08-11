@@ -2,7 +2,7 @@ import {ObjectLiteral} from "../../../types/ObjectLiteral";
 import {Query} from "../../../sql/Query";
 import {ITable} from "../../../sql/models/table";
 import {QueryGenerator} from "../../../query-runner/QueryGenerator";
-import {FindOneOptions} from "../../../find-options/FindOptions";
+import {FindOneOptions} from "../../../find-options/FindOneOptions";
 import {PostgresConstants} from "../../../sql/constants/pg";
 
 export class PostgresFindQueryGenerator implements QueryGenerator {
@@ -16,6 +16,7 @@ export class PostgresFindQueryGenerator implements QueryGenerator {
       const whereClause = options?.where;
       return new Query(
           //@formatter:off
+          //@ts-ignore
           `SELECT * FROM ${escape}${table.name}${escape} ${this.formatWhereClause(whereClause)};`,
           //@formatter:on
           this.getValues(whereClause)

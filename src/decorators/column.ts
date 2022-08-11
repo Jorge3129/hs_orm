@@ -11,7 +11,6 @@ export interface Options {
    default?: any
 }
 
-
 const convertOptions = (options: Options): Options => {
    return {
       notNull: !!options?.notNull,
@@ -24,7 +23,6 @@ const convertOptions = (options: Options): Options => {
 export function Column(options?: Options) {
    return function (target: any, key: string) {
       const t = Reflect.getMetadata("design:type", target, key);
-      // console.log("  " + t.name)
       const column = Object.assign({
          name: key,
          type: t.name

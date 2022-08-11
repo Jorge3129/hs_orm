@@ -11,6 +11,7 @@ import {MysqlResultFormatter} from "./query-generator/MysqlResultFormatter";
 import {MysqlFindQueryGenerator} from "./query-generator/MysqlFindQueryGenerator";
 import {Logger} from "../../logger/Logger";
 import {DebugLogger} from "../../logger/DebugLogger";
+import {MysqlSaveManyQueryGenerator} from "./query-generator/MysqlSaveManyQueryGenerator";
 
 export class MysqlDriver implements Driver {
 
@@ -57,6 +58,8 @@ export class MysqlDriver implements Driver {
       switch (type) {
          case "save":
             return new MysqlSaveQueryGenerator();
+         case "saveMany":
+            return new MysqlSaveManyQueryGenerator();
          case "find":
             return new MysqlFindQueryGenerator();
          default:

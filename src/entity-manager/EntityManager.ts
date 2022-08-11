@@ -3,7 +3,7 @@ import {ObjectLiteral} from "../types/ObjectLiteral";
 import {getMetadata} from "../metadata/MetaData";
 import {DataSource} from "../data-source/DataSource";
 import {ITable} from "../sql/models/table";
-import {FindOneOptions} from "../find-options/FindOptions";
+import {FindOneOptions} from "../find-options/FindOneOptions";
 
 export class EntityManager {
 
@@ -27,10 +27,15 @@ export class EntityManager {
       return table
    }
 
-   async save<T extends ObjectLiteral = any>(item: T, entity: Function): Promise<T> {
+   save<T extends ObjectLiteral = any>(item: T, entity: Function): Promise<T>;
+   save<T extends ObjectLiteral = any>(item: T[], entity: Function): Promise<T[]>;
+
+   async save<T extends ObjectLiteral = any>(item: T | T[], entity: Function): Promise<T | T[]> {
       const table = this.getTable(entity)
       const driver = this.dataSource.driver
-      const query = driver.getQueryGenerator("save").generate(table, item)
+      const query = Array.isArray(item) ?
+          driver.getQueryGenerator("saveMany").generate(table, item) :
+          driver.getQueryGenerator("save").generate(table, item)
       const result = await driver.query(query)
       return driver.getResultFormatter().getInsertedRow(result)
    }
