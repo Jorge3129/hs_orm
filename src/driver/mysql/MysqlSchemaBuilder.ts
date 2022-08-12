@@ -1,12 +1,14 @@
 import {ISchema, ITable} from "../../sql/models/table";
 import {IColumn} from "../../sql/models/column";
 import {MySQLConstants} from "../../sql/constants/mysql";
+import {Query} from "../../sql/Query";
 
 export class MysqlSchemaBuilder {
 
    private constants = MySQLConstants
+   private readonly values: any[] = []
 
-   static createTable(table: ITable): string {
+   static createTable(table: ITable): Query {
       return new MysqlSchemaBuilder().createTable(table)
    }
 
@@ -14,11 +16,12 @@ export class MysqlSchemaBuilder {
       return new MysqlSchemaBuilder().dropTable(table)
    }
 
-   createTable(table: ITable): string {
+   createTable(table: ITable): Query {
       const escape = this.constants.kwEscape;
       //@formatter:off
-      return `CREATE TABLE IF NOT EXISTS ${escape}${table.name}${escape}(\n${this.extractColumns(table.schema)}\n);`
+      const queryString = `CREATE TABLE IF NOT EXISTS ${escape}${table.name}${escape}(\n${this.extractColumns(table.schema)}\n);`
       //@formatter:on
+      return new Query(queryString, this.values)
    }
 
    dropTable(table: ITable): string {
@@ -36,14 +39,15 @@ export class MysqlSchemaBuilder {
    }
 
    extractOptions(column: IColumn): string {
-      const newOptions = {
-         type: this.getType(column.type),
-         notNull: column.notNull ? "NOT NULL" : "",
-         primaryKey: column.primaryKey ? "PRIMARY KEY" : "",
-         autoIncrement: column.generated || column.autoIncrement ? "AUTO_INCREMENT" : "",
-         default: column.default !== undefined ? `DEFAULT ${column.default}` : "",
-      }
-      return Object.values(newOptions).filter(option => option).join(' ')
+      const newOptions = [
+         this.getType(column.type),
+         column.primary && "PRIMARY KEY",
+         column.generated && "AUTO_INCREMENT",
+         !column.nullable && "NOT NULL",
+         column.default !== undefined && `DEFAULT ?`,
+      ]
+      if (column.default !== undefined) this.values.push(column.default)
+      return newOptions.filter(option => option).join(' ')
    }
 
    getType(type: string, length?: number): string {

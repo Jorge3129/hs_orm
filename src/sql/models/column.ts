@@ -1,9 +1,8 @@
 export interface IColumn {
-   name: string
    type: any
-   notNull: boolean
-   autoIncrement: boolean
-   primaryKey: boolean
-   default: any | null
+   name: string
+   nullable: boolean
+   primary: boolean
    generated: boolean
+   default: any
 }

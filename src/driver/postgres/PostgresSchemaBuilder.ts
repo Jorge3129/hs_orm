@@ -1,12 +1,14 @@
 import {ISchema, ITable} from "../../sql/models/table";
 import {IColumn} from "../../sql/models/column";
 import {PostgresConstants} from "../../sql/constants/pg";
+import {Query} from "../../sql/Query";
+import dayjs from "dayjs";
 
 export class PostgresSchemaBuilder {
 
    private constants = PostgresConstants
 
-   static createTable(table: ITable): string {
+   static createTable(table: ITable): Query {
       return new PostgresSchemaBuilder().createTable(table)
    }
 
@@ -14,11 +16,12 @@ export class PostgresSchemaBuilder {
       return new PostgresSchemaBuilder().dropTable(table)
    }
 
-   createTable(table: ITable): string {
+   createTable(table: ITable): Query {
       const escape = this.constants.kwEscape;
       //@formatter:off
-      return `CREATE TABLE IF NOT EXISTS ${escape}${table.name}${escape}(\n${this.extractColumns(table.schema)}\n);`
+      const queryString = `CREATE TABLE IF NOT EXISTS ${escape}${table.name}${escape}(\n${this.extractColumns(table.schema)}\n);`
       //@formatter:on
+      return new Query(queryString, [])
    }
 
    dropTable(table: ITable): string {
@@ -37,14 +40,20 @@ export class PostgresSchemaBuilder {
 
    extractOptions(column: IColumn): string {
       // if (column.generated) console.log(column)
-      const newOptions = {
-         type: column.generated ? PostgresConstants.generated : this.getType(column.type),
-         notNull: column.notNull ? "NOT NULL" : "",
-         primaryKey: column.primaryKey ? "PRIMARY KEY" : "",
-         autoIncrement: "",
-         default: column.default !== undefined ? `DEFAULT ${column.default}` : "",
-      }
-      return Object.values(newOptions).filter(option => option).join(' ')
+      const newOptions = [
+         column.generated ? PostgresConstants.generated : this.getType(column.type),
+         column.primary && "PRIMARY KEY",
+         !column.nullable && "NOT NULL",
+         column.default !== undefined && `DEFAULT ${this.format(column.default)}`,
+      ]
+      return newOptions.filter(option => option).join(' ')
+   }
+
+   format(value: any): string {
+      if (typeof value === "string") return `'${value}'`
+      if (typeof value === "number") return value + ''
+      if (typeof value === "object" && value instanceof Date) return dayjs(value).format('YYYY-MM-DD HH:mm:ss')
+      return 'NULL'
    }
 
    getType(type: string, length?: number): string {

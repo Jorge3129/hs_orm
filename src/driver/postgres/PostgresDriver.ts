@@ -10,6 +10,7 @@ import {PostgresResultFormatter} from "./query-generator/PostgresResultFormatter
 import {PostgresFindQueryGenerator} from "./query-generator/PostgresFindQueryGenerator";
 import {Logger} from "../../logger/Logger";
 import {DebugLogger} from "../../logger/DebugLogger";
+import { PostgresSaveManyQueryGenerator } from "./query-generator/PostgreSaveManyQueryGenerator";
 
 export class PostgresDriver implements Driver {
 
@@ -24,6 +25,8 @@ export class PostgresDriver implements Driver {
       switch (type) {
          case "save":
             return new PostgresSaveQueryGenerator();
+         case "saveMany":
+            return new PostgresSaveManyQueryGenerator();
          case "find":
             return new PostgresFindQueryGenerator();
          default:

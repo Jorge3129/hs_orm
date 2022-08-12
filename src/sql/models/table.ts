@@ -7,4 +7,5 @@ export interface ITable {
    schema: ISchema
    entity: Function
    primaryKey?: IColumn
+   foreignKeys: []
 }

@@ -1,6 +1,6 @@
 import "reflect-metadata"
-import {createSchema} from "../sql/create-schema";
-import {getTempMetadata, saveMetaData} from "../metadata/MetaData";
+import {createSchema} from "../../sql/create-schema";
+import {getTempMetadata, saveMetaData} from "../../metadata/MetaData";
 
 export const Entity = (name?: string) => {
    return (target: any) => {
@@ -10,7 +10,8 @@ export const Entity = (name?: string) => {
          name: name || target.name,
          schema: createSchema(metadata.columns),
          entity: target,
-         primaryKey: metadata.columns.find(c => c.primaryKey)
+         primaryKey: metadata.columns.find(c => c.primary),
+         foreignKeys: []
       })
       metadata.columns = []
       saveMetaData()
