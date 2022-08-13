@@ -3,6 +3,8 @@ import {DataSourceConfig} from './data-source/DataSourceConfig'
 import {Column} from './decorators/columns/Column'
 import {Entity} from './decorators/columns/Entity'
 import {PrimaryGeneratedColumn} from './decorators/columns/PrimaryGeneratedColumn'
+import { ManyToOne } from './decorators/relations/ManyToOne'
+import {OneToMany} from './decorators/relations/OneToMany'
 import {Driver} from './driver/Driver'
 import {FindOneOptions} from './find-options/FindOneOptions'
 import {Between} from './find-options/operators/Between'
@@ -32,6 +34,8 @@ export {
    Entity,
    Column,
    PrimaryGeneratedColumn,
+   OneToMany,
+   ManyToOne,
    Not,
    Like,
    IsNull,

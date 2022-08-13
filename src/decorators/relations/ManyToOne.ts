@@ -1,11 +1,10 @@
 import {ObjectType} from "../../common/ObjectType";
-import {RelationOptions} from "../options/RelationOptions";
 import {getTempMetadata} from "../../metadata/MetaData";
+import {RelationOptions} from "../options/RelationOptions";
 import {createOptions} from "../options/createOptions";
 import {defaultRelationOptions} from "../options/defaultRelationOptions";
 
-
-export function OneToMany<T>
+export function ManyToOne<T>
 (
     typeFunctionOrTarget: string | ((type?: any) => ObjectType<T>),
     inverseSide: string | ((object: T) => any),
@@ -14,7 +13,7 @@ export function OneToMany<T>
    return function (target: any, key: string) {
       console.log(key)
       getTempMetadata().relations.push({
-         relationType: "one-to-many",
+         relationType: "many-to-one",
          target: target.constructor,
          propertyName: key,
          options: createOptions<RelationOptions, RelationOptions>(defaultRelationOptions, options),

@@ -5,6 +5,6 @@ export interface DataSourceConfig {
    user?: string,
    password: string | null,
    database?: string,
-   entities?: string[],
+   entities?: Function[],
    logging?: boolean,
 }

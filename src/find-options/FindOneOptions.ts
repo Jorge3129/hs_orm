@@ -6,6 +6,6 @@ import {FindOptionsOrder} from "./FindOptionsOrder";
 export interface FindOneOptions<Entity = any> {
    select?: FindOptionsSelect<Entity>
    where?: FindOptionsWhere<Entity>[] | FindOptionsWhere<Entity>
-   relations?: FindOptionsRelations<Entity> | FindOptionsRelationByString
+   relations?: FindOptionsRelationByString //| FindOptionsRelations<Entity>
    order?: FindOptionsOrder<Entity>
 }

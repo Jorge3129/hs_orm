@@ -1,11 +1,12 @@
 import {ITable} from "../sql/models/table";
 import 'reflect-metadata'
 import {IColumn} from "../sql/models/column";
+import {IRelation} from "../sql/models/relation";
 
 interface IMetaData {
    tables: ITable[]
    columns: IColumn[]
-   relations: any[]
+   relations: IRelation[]
 }
 
 const metadata: IMetaData = {

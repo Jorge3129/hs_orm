@@ -1,6 +1,6 @@
 
 
 export interface ResultFormatter {
-   getInsertedRow<Entity>(queryResult: any): Entity
-   getFindResult<Entity>(queryResult: any): Entity[]
+   getInsertedRow<Entity = any>(queryResult: any): Entity
+   getFindResult<Entity = any>(queryResult: any): Entity[]
 }

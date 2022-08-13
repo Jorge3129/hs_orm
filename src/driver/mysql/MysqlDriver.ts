@@ -61,7 +61,7 @@ export class MysqlDriver implements Driver {
          case "saveMany":
             return new MysqlSaveManyQueryGenerator();
          case "find":
-            return new MysqlFindQueryGenerator();
+            return new MysqlFindQueryGenerator(this.dataSource.manager);
          default:
             throw new Error("This query type is not supported")
       }

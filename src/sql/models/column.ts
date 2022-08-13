@@ -1,3 +1,5 @@
+import { IRelation } from "./relation"
+
 export interface IColumn {
    type: any
    name: string
@@ -5,4 +7,5 @@ export interface IColumn {
    primary: boolean
    generated: boolean
    default: any
+   relation?: IRelation
 }

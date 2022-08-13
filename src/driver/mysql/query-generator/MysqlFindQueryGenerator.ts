@@ -1,62 +1,95 @@
 import {ObjectLiteral} from "../../../types/ObjectLiteral";
 import {Query} from "../../../sql/Query";
-import {MySQLConstants} from "../../../sql/constants/mysql";
 import {ITable} from "../../../sql/models/table";
-import {QueryGenerator} from "../../../query-runner/QueryGenerator";
 import {FindOneOptions} from "../../../find-options/FindOneOptions";
 import {FindOperator} from "../../../find-options/FindOperator";
 import {OperatorMap} from "./OperatorMap";
 import {FindOptionsSelect} from "../../../find-options/FindOptionsSelect";
 import {FindOptionsWhere} from "../../../find-options/FindOptionsWhere";
+import {MysqlQueryGenerator} from "./MysqlQueryGenerator";
+import {EntityManager} from "../../../entity-manager/EntityManager";
+import {ColorCodes} from "../../../logger/ColorCodes";
 
-export class MysqlFindQueryGenerator implements QueryGenerator {
+export class MysqlFindQueryGenerator extends MysqlQueryGenerator {
 
-   private constants = MySQLConstants
+   constructor(public manager: EntityManager) {
+      super();
+   }
 
    generate<Entity extends ObjectLiteral = any>(table: ITable, options?: FindOneOptions<Entity>): Query {
-      const escape = this.constants.kwEscape;
       const {where, select} = Object.assign({}, options)
-      const selectClause = this.formatSelectClause(select);
-      const whereClause = this.formatWhereClause(where);
+      const selectClause = this.formatSelectClause(table, select);
+      const whereClause = this.formatWhereClause(table, where);
+      const joinClause = this.formatJoin(table, options);
       return new Query(
           //@formatter:off
-          `SELECT ${selectClause} FROM ${escape}${table.name}${escape} ${whereClause}`,
+          `SELECT ${selectClause} FROM ${this.escape(table.name)} ${joinClause} ${whereClause}`,
           //@formatter:on
           this.getWhereValues(where)
       )
    }
 
-   formatSelectClause<Entity extends ObjectLiteral = any>(selectClause?: FindOptionsSelect<Entity>): string {
+   formatJoin(table: ITable, options?: FindOneOptions<any>): string {
+      const relationStrings = options?.relations || []
+      const relations = relationStrings.map(relationString => table.relationSchema[relationString])
+
+      const joinTables = relations.map(relation => ({table: this.manager.getTable(relation.type()), relation}))
+
+      return joinTables.map(({table: t, relation}) => {
+         const [joinTName, joinTKey, tName, tKey] = [t.name, t.primaryKey?.name, table.name, relation.propertyName].map(a => this.escape(a))
+         return `INNER JOIN ${joinTName} ON ${joinTName}.${joinTKey} = ${tName}.${tKey}`
+      }).join(' ')
+   }
+
+   formatSelectClause<Entity extends ObjectLiteral = any>(table: ITable, selectClause?: FindOptionsSelect<Entity>): string {
       if (!selectClause) return "*"
       return Object.keys(selectClause)
           .filter(field => selectClause[field])
+          .map(field => this.getTableName(table) + this.escape(field))
           .join(", ")
    }
 
-   formatWhereClause<Entity extends ObjectLiteral = any>(whereClause?: FindOptionsWhere<Entity> | FindOptionsWhere<Entity>[]): string {
+   private getTableName(table: ITable): string {
+      return this.escape(table.name) + ".";
+   }
+
+   formatWhereClause<Entity extends ObjectLiteral = any>(table: ITable, whereClause?: FindOptionsWhere<Entity> | FindOptionsWhere<Entity>[]): string {
       if (!whereClause) return ""
-      return `WHERE ${this.formatWhere(whereClause)}`
+      return `WHERE ${this.formatWhere(table, whereClause)}`
    }
 
-   formatWhere<Entity extends ObjectLiteral = any>(whereClause: FindOptionsWhere<Entity> | FindOptionsWhere<Entity>[]): string {
-      if (Array.isArray(whereClause)) return this.formatOr(whereClause)
-      return this.formatAnd(whereClause)
+   formatWhere<Entity extends ObjectLiteral = any>(table: ITable, whereClause: FindOptionsWhere<Entity> | FindOptionsWhere<Entity>[]): string {
+      if (Array.isArray(whereClause)) return this.formatOr(table, whereClause)
+      return this.formatAnd(table, whereClause)
    }
 
-   formatAnd<Entity extends ObjectLiteral = any>(entity: FindOptionsWhere<Entity>): string {
-      const escape = this.constants.kwEscape;
+   formatAnd<Entity extends ObjectLiteral = any>(table: ITable, entity: FindOptionsWhere<Entity>, brackets?: boolean): string {
+      const tableName = this.escape(table.name);
       const result = Object.entries(entity)
           .map(([key, value]) =>
-              value instanceof FindOperator ?
-                  `${escape}${key}${escape} ${this.getOperatorValue(value).statement}` :
-                  `${escape}${key}${escape} = ?`
+              value.constructor?.name === "FindOperator" ?
+                  `${tableName}.${this.escape(key)} ${this.getOperatorValue(value).statement}` :
+                  typeof value === "object" ?
+                      this.formatRelatedObject(table, key, value) :
+                      `${tableName}.${this.escape(key)} = ?`
           )
           .join(' AND ')
-      return `(${result})`
+      return brackets ? `(${result})` : result
    }
 
-   formatOr<Entity extends ObjectLiteral = any>(whereClause: FindOptionsWhere<Entity>[]): string {
-      return whereClause.map(value => this.formatAnd(value)).join(' OR ');
+   private formatRelatedObject(table: ITable, key: string, value: any): string {
+      // console.log(`${ColorCodes.FgCyan}%s${ColorCodes.Reset}`, '\nformatRelatedObject')
+      return new MysqlFindQueryGenerator(this.manager)
+          .formatAnd(this.getRelation(table, key), value)
+   }
+
+   private getRelation(table: ITable, key: string): ITable {
+      const relation = table.relationSchema[key];
+      return this.manager.getTable(relation.type())
+   }
+
+   formatOr<Entity extends ObjectLiteral = any>(table: ITable, whereClause: FindOptionsWhere<Entity>[]): string {
+      return whereClause.map(value => this.formatAnd(table, value, true)).join(' OR ');
    }
 
    getWhereValues<Entity extends ObjectLiteral>(whereClause?: any): any[] {
@@ -70,10 +103,14 @@ export class MysqlFindQueryGenerator implements QueryGenerator {
    }
 
    getFindOperatorOrPlainValues<T = any>(values: Array<FindOperator<T> | T>): any[] {
-      if (!values.find(v => v instanceof FindOperator)) return values
-      return values.flatMap(value => value instanceof FindOperator ?
-          this.getFindOperatorOrPlainValues(value.getValues())
-          : [value])
+      if (!values.find(v => typeof v === "object")) return values
+      return values.flatMap((value: any) => {
+         return value.constructor?.name === "FindOperator" ?
+             this.getFindOperatorOrPlainValues(value.getValues()) :
+             typeof value === "object" ?
+                 this.getFindOperatorOrPlainValues(Object.values(value))
+                 : [value]
+      })
    }
 
 
@@ -85,9 +122,5 @@ export class MysqlFindQueryGenerator implements QueryGenerator {
           [`${this.fillPlaceholders(operator.getValues().length)}`, operator.getValues()]
       const operatorFn = OperatorMap[operator.type]
       return new Query(operatorFn(placeholder), value)
-   }
-
-   private fillPlaceholders(length: number): string {
-      return new Array(length).fill("?").join(",")
    }
 }

@@ -18,6 +18,7 @@ export class MysqlSchemaBuilder {
 
    createTable(table: ITable): Query {
       const escape = this.constants.kwEscape;
+      const columns = this.extractColumns(table.schema);
       //@formatter:off
       const queryString = `CREATE TABLE IF NOT EXISTS ${escape}${table.name}${escape}(\n${this.extractColumns(table.schema)}\n);`
       //@formatter:on
